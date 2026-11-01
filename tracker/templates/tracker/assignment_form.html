@@ -1,0 +1,17 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <section class="form-card django-form">
+    <h1>{{ title }}</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="actions">
+        <button type="submit">Save</button>
+        <a class="btn btn-secondary" href="{% url 'assignment_list' %}">Cancel</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

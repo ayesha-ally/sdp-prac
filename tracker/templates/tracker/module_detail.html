@@ -1,0 +1,62 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}{{ module.code }}{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>{{ module.code }}</h1>
+      <p class="lede">{{ module.name }}</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-secondary" href="{% url 'module_list' %}">Back to modules</a>
+      <a class="btn btn-secondary" href="{% url 'module_edit' module.pk %}">Edit</a>
+      <a class="btn btn-primary" href="{% url 'assignment_create' %}?module={{ module.pk }}">Add assignment</a>
+    </div>
+  </div>
+
+  <section class="panel">
+    <h2>Assignments</h2>
+    {% if assignments %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Due</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for assignment in assignments %}
+            <tr>
+              <td><a href="{% url 'assignment_detail' assignment.pk %}">{{ assignment.title }}</a></td>
+              <td>{{ assignment.due_date }}</td>
+              <td>
+                <span class="badge">{{ assignment.status }}</span>
+                {% if assignment.is_overdue %}<span class="badge badge-overdue">Overdue</span>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="empty">No active assignments for this module.</p>
+    {% endif %}
+  </section>
+
+  {% if archived_assignments %}
+    <section class="panel">
+      <h2>Archived assignments</h2>
+      <table class="data-table">
+        <tbody>
+          {% for assignment in archived_assignments %}
+            <tr>
+              <td><a href="{% url 'assignment_detail' assignment.pk %}">{{ assignment.title }}</a></td>
+              <td><span class="badge badge-archived">archived</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
+{% endblock %}

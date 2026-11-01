@@ -1,0 +1,39 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="lede">A snapshot of your current workload. Archived assignments are not counted.</p>
+    </div>
+    <div class="actions">
+      <a class="btn btn-secondary" href="{% url 'module_list' %}">View modules</a>
+      <a class="btn btn-primary" href="{% url 'assignment_list' %}">View assignments</a>
+    </div>
+  </div>
+
+  <section class="stats">
+    <article class="stat-card">
+      <h2>Total</h2>
+      <p class="stat-value">{{ total_count }}</p>
+      <p class="sr-only">Total: {{ total_count }}</p>
+    </article>
+    <article class="stat-card">
+      <h2>Completed</h2>
+      <p class="stat-value">{{ completed_count }}</p>
+      <p class="sr-only">Completed: {{ completed_count }}</p>
+    </article>
+    <article class="stat-card">
+      <h2>Pending</h2>
+      <p class="stat-value">{{ pending_count }}</p>
+      <p class="sr-only">Pending: {{ pending_count }}</p>
+    </article>
+    <article class="stat-card overdue">
+      <h2>Overdue</h2>
+      <p class="stat-value">{{ overdue_count }}</p>
+      <p class="sr-only">Overdue: {{ overdue_count }}</p>
+    </article>
+  </section>
+{% endblock %}

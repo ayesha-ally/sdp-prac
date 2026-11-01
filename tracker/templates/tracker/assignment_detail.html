@@ -1,0 +1,45 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}{{ assignment.title }}{% endblock %}
+
+{% block content %}
+  <section class="detail-card">
+    <div class="page-header">
+      <div>
+        <h1>{{ assignment.title }}</h1>
+        <p class="lede">Assignment details</p>
+      </div>
+    </div>
+
+    {% if assignment.archived %}
+      <p class="notice">This assignment is archived. It has not been deleted.</p>
+    {% endif %}
+    {% if assignment.is_overdue %}
+      <p class="notice">Overdue</p>
+    {% endif %}
+
+    <dl class="dl">
+      <dt>Module</dt>
+      <dd><a href="{% url 'module_detail' assignment.module.pk %}">{{ assignment.module.code }}</a></dd>
+      <dt>Description</dt>
+      <dd>{% if assignment.description %}{{ assignment.description|linebreaksbr }}{% else %}—{% endif %}</dd>
+      <dt>Due</dt>
+      <dd>{{ assignment.due_date }}</dd>
+      <dt>Priority</dt>
+      <dd><span class="badge badge-yellow">{{ assignment.priority }}</span></dd>
+      <dt>Status</dt>
+      <dd><span class="badge">{{ assignment.status }}</span></dd>
+    </dl>
+
+    <div class="actions" style="margin-top: 24px;">
+      <a class="btn btn-primary" href="{% url 'assignment_edit' assignment.pk %}">Edit</a>
+      {% if not assignment.archived %}
+        <form method="post" action="{% url 'assignment_archive' assignment.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-danger">Archive</button>
+        </form>
+      {% endif %}
+      <a class="btn btn-secondary" href="{% url 'assignment_list' %}">Back to assignments</a>
+    </div>
+  </section>
+{% endblock %}

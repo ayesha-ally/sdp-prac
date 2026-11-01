@@ -1,0 +1,38 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Modules{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Modules</h1>
+      <p class="lede">Each assignment belongs to one module. Codes must be unique.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'module_create' %}">Add module</a>
+  </div>
+
+  <section class="panel">
+    {% if modules %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for module in modules %}
+            <tr>
+              <td><a href="{% url 'module_detail' module.pk %}">{{ module.code }}</a></td>
+              <td>{{ module.name }}</td>
+              <td><a href="{% url 'module_edit' module.pk %}">Edit</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="empty">No modules yet. Add a module to start tracking assignments.</p>
+    {% endif %}
+  </section>
+{% endblock %}

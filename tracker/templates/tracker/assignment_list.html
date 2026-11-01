@@ -1,0 +1,129 @@
+{% extends "tracker/base.html" %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <div>
+      <h1>Assignments</h1>
+      <p class="lede">Search by title or filter by module, priority and status.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'assignment_create' %}">Add assignment</a>
+  </div>
+
+  <form method="get" class="panel filters">
+    <label>
+      Search title
+      <input type="search" name="q" value="{{ search_q }}" class="field-control">
+    </label>
+    <label>
+      Module
+      <select name="module" class="field-control">
+        <option value="">All</option>
+        {% for module in modules %}
+          <option value="{{ module.pk }}" {% if filter_module == module.pk|stringformat:"s" %}selected{% endif %}>
+            {{ module.code }}
+          </option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Priority
+      <select name="priority" class="field-control">
+        <option value="">All</option>
+        {% for value, label in priorities %}
+          <option value="{{ value }}" {% if filter_priority == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>
+      Status
+      <select name="status" class="field-control">
+        <option value="">All</option>
+        {% for value, label in statuses %}
+          <option value="{{ value }}" {% if filter_status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Apply</button>
+    <a class="btn btn-secondary" href="{% url 'assignment_list' %}">Clear</a>
+  </form>
+
+  {% if overdue_assignments %}
+    <section class="panel">
+      <h2>Overdue</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Module</th>
+            <th>Due</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for assignment in overdue_assignments %}
+            <tr>
+              <td><a href="{% url 'assignment_detail' assignment.pk %}">{{ assignment.title }}</a></td>
+              <td>{{ assignment.module.code }}</td>
+              <td>{{ assignment.due_date }}</td>
+              <td>
+                <span class="badge">{{ assignment.status }}</span>
+                <span class="badge badge-overdue">Overdue</span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
+
+  <section class="panel">
+    {% if assignments %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Module</th>
+            <th>Due</th>
+            <th>Priority</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for assignment in assignments %}
+            <tr>
+              <td><a href="{% url 'assignment_detail' assignment.pk %}">{{ assignment.title }}</a></td>
+              <td>{{ assignment.module.code }}</td>
+              <td>{{ assignment.due_date }}</td>
+              <td><span class="badge badge-yellow">{{ assignment.priority }}</span></td>
+              <td>
+                <span class="badge">{{ assignment.status }}</span>
+                {% if assignment.is_overdue %}<span class="badge badge-overdue">Overdue</span>{% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="empty">No matching assignments.</p>
+    {% endif %}
+  </section>
+
+  {% if archived_assignments %}
+    <section class="panel">
+      <h2>Archived</h2>
+      <table class="data-table">
+        <tbody>
+          {% for assignment in archived_assignments %}
+            <tr>
+              <td><a href="{% url 'assignment_detail' assignment.pk %}">{{ assignment.title }}</a></td>
+              <td>{{ assignment.module.code }}</td>
+              <td><span class="badge badge-archived">archived</span></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
+{% endblock %}

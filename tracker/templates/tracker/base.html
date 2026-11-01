@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Student Assignment Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tracker/styles.css' %}">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="{% url 'home' %}">
+          <span><span class="brand-mark"></span>Student Assignment Tracker</span>
+          <span class="brand-sub">Plan modules, deadlines and progress</span>
+        </a>
+        <nav class="nav">
+          <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">Dashboard</a>
+          <a href="{% url 'module_list' %}" class="{% if request.resolver_match.url_name == 'module_list' or request.resolver_match.url_name == 'module_detail' or request.resolver_match.url_name == 'module_create' or request.resolver_match.url_name == 'module_edit' %}is-active{% endif %}">Modules</a>
+          <a href="{% url 'assignment_list' %}" class="{% if 'assignment' in request.resolver_match.url_name %}is-active{% endif %}">Assignments</a>
+        </nav>
+      </div>
+    </header>
+    <main class="page">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
