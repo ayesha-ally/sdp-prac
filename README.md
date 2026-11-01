@@ -1,6 +1,6 @@
 # Student Assignment Tracker
 
-Web app for tracking university assignments by module. This is the project skeleton only.
+Web app for tracking university assignments by module: modules, assignments, overdue status, search/filters and a dashboard.
 
 ## Setup
 
@@ -21,7 +21,7 @@ On macOS or Linux, activate with `source .venv/bin/activate`.
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ — you should see the skeleton home page.
+Open http://127.0.0.1:8000/
 
 ## Test
 
@@ -29,12 +29,39 @@ Open http://127.0.0.1:8000/ — you should see the skeleton home page.
 python manage.py test
 ```
 
-No feature tests are included yet. The command should complete with `NO TESTS RAN`.
-
 ## Database
 
-Local development uses SQLite (`db.sqlite3`). For production, set `DATABASE_URL` to a PostgreSQL connection string. Optional environment variables: `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS` (comma-separated).
+Local development uses SQLite (`db.sqlite3`). Production uses PostgreSQL via `DATABASE_URL`.
 
-## Deployment
+## Deployment (Render)
 
-Not configured yet. The live application will be deployed after features are implemented.
+The app is configured for Render with Gunicorn, WhiteNoise and PostgreSQL.
+
+1. Push this repository to a Git host Render can clone. If you use Gitea, the repo must be publicly cloneable, or use another reachable Git URL.
+2. On Render, create a **PostgreSQL** database.
+3. Create a **Web Service** from this repo:
+   - **Build command:** `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
+   - **Start command:** `gunicorn config.wsgi:application --bind 0.0.0.0:$PORT`
+4. Set environment variables:
+
+| Variable | Value |
+|---|---|
+| `DEBUG` | `False` |
+| `SECRET_KEY` | a long random string |
+| `DATABASE_URL` | Internal Database URL from the Render Postgres service |
+| `ALLOWED_HOSTS` | optional if Render sets `RENDER_EXTERNAL_HOSTNAME` |
+| `CSRF_TRUSTED_ORIGINS` | optional if Render sets `RENDER_EXTERNAL_HOSTNAME` |
+
+After deploy, confirm the CSS loads, create a module, restart the service, and confirm the data is still there.
+
+**Live URL:** _add the public Render URL here after deployment_
+
+## Environment variables
+
+| Variable | Local default | Purpose |
+|---|---|---|
+| `DEBUG` | `True` | Django debug mode |
+| `SECRET_KEY` | insecure dev key | Django secret |
+| `ALLOWED_HOSTS` | `localhost,127.0.0.1` | Allowed hostnames |
+| `CSRF_TRUSTED_ORIGINS` | empty | HTTPS origins for forms |
+| `DATABASE_URL` | SQLite file | Database connection |
